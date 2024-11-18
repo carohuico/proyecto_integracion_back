@@ -17,7 +17,7 @@ def get_historial():
             LEFT JOIN pagos p ON c.id_credito = p.id_credito;
         """)
         historial = cursor.fetchall()
-        print(historial)
+        #print(historial)
     connection.close()
     return jsonify(historial)
 
@@ -35,6 +35,11 @@ def get_historial_cliente(clienteId):
         """, (clienteId,))
         historial = cursor.fetchall()
     connection.close()
+
+    # Si no hay resultados, devolver un mensaje claro
+    if not historial:
+        return jsonify({"error": "No se encontró historial para el cliente con ID proporcionado."}), 404
+
     return jsonify(historial)
 
 if __name__ == '__main__':
