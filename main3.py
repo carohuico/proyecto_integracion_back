@@ -11,11 +11,10 @@ def run_service(folder, file, port):
 
 # Lista de servicios CRUD con el archivo y puerto correspondiente
 services = [
-    # Servicios de CRUD_clientes
-    {"folder": "CRUD_clientes", "file": "service_c_cliente", "port": 5001},
-    {"folder": "CRUD_clientes", "file": "service_r_cliente", "port": 5002},
-    {"folder": "CRUD_clientes", "file": "service_u_cliente", "port": 5003},
-    {"folder": "CRUD_clientes", "file": "service_d_cliente", "port": 5004},
+    {"folder": "CRUD_historial_credito", "file": "service_c_historial", "port": 5012},
+    {"folder": "CRUD_historial_credito", "file": "service_r_historial", "port": 5013},
+    {"folder": "CRUD_historial_credito", "file": "service_u_historial", "port": 5014},
+    {"folder": "CRUD_historial_credito", "file": "service_d_historial", "port": 5015},
 ]
 
 threads = []

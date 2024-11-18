@@ -1,21 +1,22 @@
 import threading
 import os
-import sys
 
 def run_service(folder, file, port):
     """
-    Ejecuta servicios usando threads en el puerto especificado
+    Ejecuta servicios usando threads en el puerto especificado.
     """
     filepath = os.path.join("app", folder, f"{file}.py")
     os.system(f"python3 {filepath}")
 
-# Lista de servicios CRUD con el archivo y puerto correspondiente
+# Lista de servicios CRUD con el archivo, carpeta y puerto correspondiente
 services = [
-    # Servicios de CRUD_clientes
-    {"folder": "CRUD_clientes", "file": "service_c_cliente", "port": 5001},
-    {"folder": "CRUD_clientes", "file": "service_r_cliente", "port": 5002},
-    {"folder": "CRUD_clientes", "file": "service_u_cliente", "port": 5003},
-    {"folder": "CRUD_clientes", "file": "service_d_cliente", "port": 5004},
+    # Servicios de CRUD_creditos
+    {"folder": "CRUD_creditos", "file": "actualizar_credito", "port": 5005},
+    {"folder": "CRUD_creditos", "file": "creditos_cliente", "port": 5006},
+    {"folder": "CRUD_creditos", "file": "historial_pagos_cliente", "port": 5007},
+    {"folder": "CRUD_creditos", "file": "otorgar_credito", "port": 5008},
+    {"folder": "CRUD_creditos", "file": "registro_pago", "port": 5009},
+    {"folder": "CRUD_creditos", "file": "ver_creditos", "port": 5010},
 ]
 
 threads = []
