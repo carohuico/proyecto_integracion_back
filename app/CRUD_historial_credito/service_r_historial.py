@@ -11,13 +11,23 @@ def get_historial():
     connection = get_db_connection()
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT c.id_credito, c.id_cliente, c.estado_credito, c.valor_pactado, c.valor_pagado, 
-                   p.fecha_pago, p.monto_pago
-            FROM creditos c
-            LEFT JOIN pagos p ON c.id_credito = p.id_credito;
+            SELECT 
+                c.id_credito, 
+                c.id_viaje, 
+                c.id_cliente, 
+                c.estado_credito, 
+                c.valor_pactado, 
+                c.valor_pagado, 
+                MAX(p.fecha_pago) AS ultima_fecha_pago
+            FROM 
+                creditos c
+            LEFT JOIN 
+                pagos p ON c.id_credito = p.id_credito
+            GROUP BY 
+                c.id_credito, c.id_viaje, c.id_cliente, c.estado_credito, c.valor_pactado, c.valor_pagado
         """)
         historial = cursor.fetchall()
-        #print(historial)
+        print(historial)
     connection.close()
     return jsonify(historial)
 
@@ -27,16 +37,25 @@ def get_historial_cliente(clienteId):
     connection = get_db_connection()
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT c.id_credito, c.estado_credito, c.valor_pactado, c.valor_pagado, 
-                   p.fecha_pago, p.monto_pago
-            FROM creditos c
-            LEFT JOIN pagos p ON c.id_credito = p.id_credito
-            WHERE c.id_cliente = %s;
+            SELECT 
+                c.id_credito, 
+                c.id_viaje, 
+                c.estado_credito, 
+                c.valor_pactado, 
+                c.valor_pagado, 
+                MAX(p.fecha_pago) AS ultima_fecha_pago
+            FROM 
+                creditos c
+            LEFT JOIN 
+                pagos p ON c.id_credito = p.id_credito
+            WHERE 
+                c.id_cliente = %s
+            GROUP BY 
+                c.id_credito, c.id_viaje, c.estado_credito, c.valor_pactado, c.valor_pagado
         """, (clienteId,))
         historial = cursor.fetchall()
     connection.close()
 
-    # Si no hay resultados, devolver un mensaje claro
     if not historial:
         return jsonify({"error": "No se encontró historial para el cliente con ID proporcionado."}), 404
 

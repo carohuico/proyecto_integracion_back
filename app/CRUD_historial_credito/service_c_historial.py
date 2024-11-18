@@ -1,30 +1,58 @@
-# app/CRUD_clientes/service_c_cliente.py
 from flask import Flask, request, jsonify
-import random
-from app.db_config import get_db_connection
 from flask_cors import CORS
+from app.db_config import get_db_connection
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/create_cliente', methods=['POST'])
-def create_cliente():
-    print("create_cliente")
-    data = request.json
-    print("--------------------")
-    print(data)
+@app.route('/api/historial-credito', methods=['POST'])
+def create_credit_and_payment():
+    data = request.get_json()
+
+    # Extraer datos del cuerpo de la solicitud
+    id_cliente = data.get('id_cliente')
+    estado_credito = data.get('estado_credito', 'activo')
+    valor_pactado = data.get('valor_pactado')
+    valor_pagado = data.get('valor_pagado', 0.00)
+    monto_pago = data.get('monto_pago')  # Puede ser None si no hay pago inicial
+
+    if not id_cliente or not valor_pactado:
+        return jsonify({"error": "id_cliente y valor_pactado son obligatorios"}), 400
+
     connection = get_db_connection()
-    #create random id 
-    id = random.randint(10000, 99999) 
-    with connection.cursor() as cursor:
-        
-        cursor.execute("""
-            INSERT INTO clientes (id_cliente, nombre_1, nombre_2, calle, telefono_1, num_identificacion_fiscal, ofvta, poblacion, grupo_clientes, canal_distribucion, tipo_canal, gr_1, clasificacion, digito_control, bloqueo_pedido, cpag, c_distribucion, distrito, zona, central, fecha_registro, limite_credito)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (id, data.get('nombre_1'), data.get('nombre_2'), data.get('calle'), data.get('telefono_1'), data.get('num_identificacion_fiscal'), data.get('ofvta'), data.get('poblacion'), data.get('grupo_clientes'), data.get('canal_distribucion'), data.get('tipo_canal'), data.get('gr_1'), data.get('clasificacion'), data.get('digito_control'), data.get('bloqueo_pedido'), data.get('cpag'), data.get('c_distribucion'), data.get('distrito'), data.get('zona'), data.get('central'), data.get('fecha_registro'), data.get('limite_credito')))
-        connection.commit()
-    connection.close()
-    return jsonify({"message": "Cliente creado con éxito"}), 201
+    try:
+        with connection.cursor() as cursor:
+            # Iniciar una transacción
+            connection.begin()
+
+            # Insertar el crédito
+            cursor.execute("""
+                INSERT INTO creditos (id_cliente, estado_credito, valor_pactado, valor_pagado)
+                VALUES (%s, %s, %s, %s)
+            """, (id_cliente, estado_credito, valor_pactado, valor_pagado))
+            
+            # Obtener el ID del crédito recién creado
+            id_credito = cursor.lastrowid
+
+            # Si hay un monto de pago, registrar el pago asociado
+            if monto_pago:
+                cursor.execute("""
+                    INSERT INTO pagos (id_credito, fecha_pago, monto_pago)
+                    VALUES (%s, NOW(), %s)
+                """, (id_credito, monto_pago))
+
+            # Confirmar la transacción
+            connection.commit()
+
+        return jsonify({"message": "Crédito y pago creados exitosamente", "id_credito": id_credito}), 201
+
+    except Exception as e:
+        # Revertir la transacción en caso de error
+        connection.rollback()
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        connection.close()
 
 if __name__ == '__main__':
-    app.run(port=5001)
+    app.run(host='0.0.0.0', port=5012)
