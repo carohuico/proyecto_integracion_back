@@ -16,7 +16,7 @@ def update_historial_credito(id):
         print(f"ID recibido en la ruta: {id}")
         print(f"Datos recibidos: {data}")
         # Validar los campos requeridos
-        if not all(key in data for key in ['id_cliente', 'id_viaje', 'valor_pactado', 'valor_pagado', 'fecha_creacion']):
+        if not all(key in data for key in ['id_cliente', 'id_viaje', 'valor_pactado', 'fecha_creacion']):
             return jsonify({'message': 'Faltan campos obligatorios'}), 400
 
         # Actualizar solo los campos permitidos
@@ -27,11 +27,10 @@ def update_historial_credito(id):
                 id_cliente = %s, 
                 id_viaje = %s, 
                 valor_pactado = %s, 
-                valor_pagado = %s, 
                 fecha_creacion = %s
             WHERE id_credito = %s
             """,
-            (data['id_cliente'], data['id_viaje'], data['valor_pactado'], data['valor_pagado'], data['fecha_creacion'], id)
+            (data['id_cliente'], data['id_viaje'], data['valor_pactado'], data['fecha_creacion'], id)
         )
 
         db_connection.commit()
