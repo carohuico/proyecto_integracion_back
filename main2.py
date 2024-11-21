@@ -17,6 +17,8 @@ services = [
     {"folder": "CRUD_creditos", "file": "otorgar_credito", "port": 5008},
     {"folder": "CRUD_creditos", "file": "registro_pago", "port": 5009},
     {"folder": "CRUD_creditos", "file": "ver_creditos", "port": 5010},
+    {"folder": "CRUD_creditos", "file": "ver_pagos", "port": 5016},
+    {"folder": "CRUD_creditos", "file": "pagos_cliente", "port": 5017},
 ]
 
 threads = []

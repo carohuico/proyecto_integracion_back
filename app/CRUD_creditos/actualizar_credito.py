@@ -36,19 +36,25 @@ def actualizar_credito(id_credito):
             data = xml_to_dict(request.data)['credito']
         else:
             return Response("Unsupported Media Type", status=415)
-        
+
+        valor_pactado = float(data['valor_pactado'])
+        valor_pagado = float(data['valor_pagado'])
+
+
         # Validar datos requeridos
-        if not all(k in data for k in ('valor_pactado', 'estado_credito')):
+        if not all(k in data for k in ('valor_pactado', 'valor_pagado')):
             return Response("Faltan datos requeridos", status=400)
         
+        print(f"Actualizando crédito con ID {id_credito}: valor_pactado = {valor_pactado}, valor_pagado = {valor_pagado}")
+
         # Conexión y actualización
         connection = get_db_connection()
         with connection.cursor() as cursor:
             cursor.execute("""
                 UPDATE creditos
-                SET valor_pactado = %s, estado_credito = %s
+                SET valor_pactado = %s, valor_pagado = %s
                 WHERE id_credito = %s
-            """, (data['valor_pactado'], data['estado_credito'], id_credito))
+            """, (valor_pactado, valor_pagado, id_credito))
             connection.commit()
         
         # Responder en el formato solicitado

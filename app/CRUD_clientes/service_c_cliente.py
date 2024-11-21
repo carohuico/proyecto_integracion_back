@@ -2,11 +2,13 @@ from flask import Flask, request, jsonify
 import random
 from app.db_config import get_db_connection
 from flask_cors import CORS
+from token_required import token_required
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/create_cliente', methods=['POST'])
+@token_required
 def create_cliente():
     print("create_cliente")
     data = request.json

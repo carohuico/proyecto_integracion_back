@@ -12,6 +12,8 @@ def run_service(folder, file, port):
 # Lista de servicios CRUD con el archivo y puerto correspondiente
 services = [
     # Servicios de CRUD_clientes
+    {"folder": "CRUD_clientes", "file": "register", "port": 5100},
+    {"folder": "CRUD_clientes", "file": "login", "port": 5000},
     {"folder": "CRUD_clientes", "file": "service_c_cliente", "port": 5001},
     {"folder": "CRUD_clientes", "file": "service_r_cliente", "port": 5002},
     {"folder": "CRUD_clientes", "file": "service_u_cliente", "port": 5003},

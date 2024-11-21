@@ -18,16 +18,14 @@ def get_historial():
                 c.estado_credito, 
                 c.valor_pactado, 
                 c.valor_pagado, 
-                MAX(p.fecha_pago) AS ultima_fecha_pago
+                c.fecha_creacion
             FROM 
                 creditos c
-            LEFT JOIN 
-                pagos p ON c.id_credito = p.id_credito
             GROUP BY 
-                c.id_credito, c.id_viaje, c.id_cliente, c.estado_credito, c.valor_pactado, c.valor_pagado
+                c.id_credito, c.id_viaje, c.id_cliente, c.estado_credito, c.valor_pactado, c.valor_pagado, c.fecha_creacion
         """)
         historial = cursor.fetchall()
-        print(historial)
+       # print(historial)
     connection.close()
     return jsonify(historial)
 
@@ -43,15 +41,13 @@ def get_historial_cliente(clienteId):
                 c.estado_credito, 
                 c.valor_pactado, 
                 c.valor_pagado, 
-                MAX(p.fecha_pago) AS ultima_fecha_pago
+                c.fecha_creacion
             FROM 
                 creditos c
-            LEFT JOIN 
-                pagos p ON c.id_credito = p.id_credito
             WHERE 
                 c.id_cliente = %s
             GROUP BY 
-                c.id_credito, c.id_viaje, c.estado_credito, c.valor_pactado, c.valor_pagado
+                c.id_credito, c.id_viaje, c.estado_credito, c.valor_pactado, c.valor_pagado, c.fecha_creacion
         """, (clienteId,))
         historial = cursor.fetchall()
     connection.close()
