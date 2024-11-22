@@ -2,12 +2,14 @@
 from flask import Flask, request, jsonify
 from app.db_config import get_db_connection
 from flask_cors import CORS
+from token_required import token_required
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/update_cliente/<int:id_cliente>', methods=['PATCH'])
-def update_cliente(id_cliente):
+@token_required
+def update_cliente(id_cliente, user_data):
     data = request.json
     connection = get_db_connection()
     with connection.cursor() as cursor:

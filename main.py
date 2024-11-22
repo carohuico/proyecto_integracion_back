@@ -18,6 +18,18 @@ services = [
     {"folder": "CRUD_clientes", "file": "service_r_cliente", "port": 5002},
     {"folder": "CRUD_clientes", "file": "service_u_cliente", "port": 5003},
     {"folder": "CRUD_clientes", "file": "service_d_cliente", "port": 5004},
+    {"folder": "CRUD_creditos", "file": "actualizar_credito", "port": 5005},
+    {"folder": "CRUD_creditos", "file": "creditos_cliente", "port": 5006},
+    {"folder": "CRUD_creditos", "file": "historial_pagos_cliente", "port": 5007},
+    {"folder": "CRUD_creditos", "file": "otorgar_credito", "port": 5008},
+    {"folder": "CRUD_creditos", "file": "registro_pago", "port": 5009},
+    {"folder": "CRUD_creditos", "file": "ver_creditos", "port": 5010},
+    {"folder": "CRUD_creditos", "file": "ver_pagos", "port": 5016},
+    {"folder": "CRUD_creditos", "file": "pagos_cliente", "port": 5017},
+    {"folder": "CRUD_historial_credito", "file": "service_c_historial", "port": 5012},
+    {"folder": "CRUD_historial_credito", "file": "service_r_historial", "port": 5013},
+    {"folder": "CRUD_historial_credito", "file": "service_u_historial", "port": 5014},
+    {"folder": "CRUD_historial_credito", "file": "service_d_historial", "port": 5015}
 ]
 
 threads = []

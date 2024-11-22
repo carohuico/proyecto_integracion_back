@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from app.db_config import get_db_connection
 from flask_cors import CORS
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import jwt
 import bcrypt
 import logging
@@ -37,16 +37,19 @@ def login():
                 return jsonify({"message": "Contraseña incorrecta"}), 401
 
             # Generar token JWT
+            #tiempo mexico
+            exp =  datetime.utcnow() + timedelta(minutes=1)
             token = jwt.encode(
                 {
                     "id_usuario": user["id_usuario"],
                     "username": user["username"],
                     "role": user["role"],
-                    "exp": datetime.utcnow() + timedelta(hours=1),
+                    "exp": exp
                 },
                 SECRET_KEY,
                 algorithm=ALGORITHM,
             )
+            logging.info(f"El token expira en {datetime.utcnow() + timedelta(seconds=20)}")
 
             # Registrar el último acceso en la base de datos
             update_query = "UPDATE usuarios SET ultimo_acceso = NOW() WHERE id_usuario = %s"

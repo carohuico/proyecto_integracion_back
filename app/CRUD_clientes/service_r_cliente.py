@@ -2,6 +2,7 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from app.db_config import get_db_connection
+from token_required import token_required
 
 #comentarioooo 
 app = Flask(__name__)
@@ -11,7 +12,6 @@ CORS(app)
 def get_clientes():
     connection = get_db_connection()
     with connection.cursor() as cursor:
-        # Consultar solo los campos necesarios y concatenar nombre_1 y nombre_2
         cursor.execute("""
             SELECT *
             FROM clientes

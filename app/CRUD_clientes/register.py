@@ -10,7 +10,6 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route('/register', methods=['POST'])
-@app.route('/register', methods=['POST'])
 def register():
     connection = get_db_connection()
     try:

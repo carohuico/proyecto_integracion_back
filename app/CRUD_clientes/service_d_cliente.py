@@ -2,11 +2,13 @@
 from flask import Flask, jsonify
 from app.db_config import get_db_connection
 from flask_cors import CORS
+from token_required import token_required
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/delete_cliente/<int:id_cliente>', methods=['DELETE'])
+@token_required
 def delete_cliente(id_cliente):
     print("delete_cliente", id_cliente)
     connection = get_db_connection()

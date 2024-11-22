@@ -25,8 +25,9 @@ def get_historial():
                 c.id_credito, c.id_viaje, c.id_cliente, c.estado_credito, c.valor_pactado, c.valor_pagado, c.fecha_creacion
         """)
         historial = cursor.fetchall()
-       # print(historial)
+       
     connection.close()
+    print(historial[0])
     return jsonify(historial)
 
 
@@ -58,4 +59,4 @@ def get_historial_cliente(clienteId):
     return jsonify(historial)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5013)
+    app.run(port=5013)

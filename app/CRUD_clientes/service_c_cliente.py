@@ -9,14 +9,14 @@ CORS(app)
 
 @app.route('/create_cliente', methods=['POST'])
 @token_required
-def create_cliente():
+def create_cliente(user_data):
     print("create_cliente")
     data = request.json
     print("--------------------")
     print(data)
-    connection = get_db_connection()
+    connection = get_db_connection()    
     # Crear ID aleatorio
-    id_cliente = random.randint(10000, 99999)
+    id_cliente = random.randint(10000, 90000)
     with connection.cursor() as cursor:
         cursor.execute("""
             INSERT INTO clientes (id_cliente, nombre_1, nombre_2, calle, telefono_1, num_identificacion_fiscal, ofvta, poblacion, grupo_clientes, canal_distribucion, tipo_canal, gr_1, clasificacion, digito_control, bloqueo_pedido, cpag, c_distribucion, distrito, zona, central, fecha_registro, limite_credito)
