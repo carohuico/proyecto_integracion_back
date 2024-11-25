@@ -56,7 +56,8 @@ def create_credit_and_payment():
             "estado_credito": 'activo',
             "valor_pactado": data['valor_pactado'],
             "valor_pagado": data['valor_pagado'],
-            "fecha_creacion": data['fecha_creacion']
+            "fecha_creacion": data['fecha_creacion'],
+            "id_viaje": data['id_viaje']
         }), 201
     except Exception as e:
         print(f"Error durante la transacción: {e}")
