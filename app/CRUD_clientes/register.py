@@ -13,6 +13,7 @@ CORS(app)
 def register():
     connection = get_db_connection()
     try:
+        print("register", request.json)
         data = request.json
         username = data.get("username")
         password = data.get("password")

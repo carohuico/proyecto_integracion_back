@@ -1,12 +1,14 @@
 from flask import Flask, request, jsonify
 from app.db_config import get_db_connection
 from flask_cors import CORS
+from token_required import token_required
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/api/pagos/<int:cliente_id>', methods=['GET'])
-def obtener_pagos_cliente(cliente_id):
+@token_required
+def obtener_pagos_cliente(cliente_id, user_data):
     if not cliente_id:
         return jsonify({"message": "ID de cliente es necesario"}), 400
 

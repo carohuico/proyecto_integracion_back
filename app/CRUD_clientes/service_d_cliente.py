@@ -9,7 +9,7 @@ CORS(app)
 
 @app.route('/delete_cliente/<int:id_cliente>', methods=['DELETE'])
 @token_required
-def delete_cliente(id_cliente):
+def delete_cliente(id_cliente, user_data):
     print("delete_cliente", id_cliente)
     connection = get_db_connection()
     with connection.cursor() as cursor:
@@ -19,4 +19,4 @@ def delete_cliente(id_cliente):
     return jsonify({"message": "Cliente eliminado con éxito"})
 
 if __name__ == '__main__':
-    app.run(port=5004)
+    app.run(host='0.0.0.0', port=5004)

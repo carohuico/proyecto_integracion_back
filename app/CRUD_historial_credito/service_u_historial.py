@@ -1,13 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from app.db_config import get_db_connection
+from token_required import token_required
 
 app = Flask(__name__)
 CORS(app)
 
 # PUT /api/historial-credito/{id}: Actualizar una entrada de crédito.
 @app.route('/api/historial-credito/<int:id>', methods=['PUT'])
-def update_historial_credito(id):
+@token_required
+def update_historial_credito(id, user_data):
     db_connection = get_db_connection()
     cursor = db_connection.cursor()
     try:

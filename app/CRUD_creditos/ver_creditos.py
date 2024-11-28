@@ -3,12 +3,14 @@ from app.db_config import get_db_connection
 import dicttoxml  
 from flask_cors import CORS 
 import pymysql
+from token_required import token_required
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/api/creditos', methods=['GET'])
-def obtener_creditos():
+@token_required
+def obtener_creditos(user_data):
     try:
         # Conexión a la base de datos
         connection = get_db_connection()

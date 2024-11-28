@@ -8,15 +8,18 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route('/create_cliente', methods=['POST'])
-@token_required
-def create_cliente(user_data):
+def create_cliente():
     print("create_cliente")
     data = request.json
     print("--------------------")
     print(data)
     connection = get_db_connection()    
     # Crear ID aleatorio
-    id_cliente = random.randint(10000, 90000)
+    if data.get('id_cliente'):
+        id_cliente = data.get('id_cliente')
+    else:
+        id_cliente = random.randint(10000, 90000)
+        
     with connection.cursor() as cursor:
         cursor.execute("""
             INSERT INTO clientes (id_cliente, nombre_1, nombre_2, calle, telefono_1, num_identificacion_fiscal, ofvta, poblacion, grupo_clientes, canal_distribucion, tipo_canal, gr_1, clasificacion, digito_control, bloqueo_pedido, cpag, c_distribucion, distrito, zona, central, fecha_registro, limite_credito)
@@ -27,4 +30,4 @@ def create_cliente(user_data):
     return jsonify({"message": "Cliente creado con éxito"}), 201
 
 if __name__ == '__main__':
-    app.run(port=5001)
+    app.run(host='0.0.0.0', port=5001)

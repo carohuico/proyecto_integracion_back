@@ -3,40 +3,39 @@ from app.db_config import get_db_connection
 import dicttoxml
 from flask_cors import CORS
 import pymysql
-from token_required import token_required
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/api/pagos', methods=['GET'])
-@token_required
-def obtener_pagos(user_data):
+@app.route('/api/creditos-activos', methods=['GET'])
+def obtener_creditos():
     try:
         # Conexión a la base de datos
         connection = get_db_connection()
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:  # Cursor para resultados como diccionarios
             cursor.execute("""
-                SELECT p.id_pago, p.id_credito, c.id_cliente, cl.nombre_1 AS nombre_cliente, p.fecha_pago, p.monto_pago 
-                FROM pagos p
-                JOIN creditos c ON p.id_credito = c.id_credito
-                JOIN clientes cl ON c.id_cliente = cl.id_cliente;
+                SELECT c.id_credito, c.id_viaje, c.id_cliente, cl.nombre_1 AS nombre, c.estado_credito, c.valor_pactado, c.valor_pagado
+                FROM creditos c
+                JOIN clientes cl
+                WHERE c.id_cliente = cl.id_cliente and c.estado_credito = 'activo';
+
             """)
-            pagos = cursor.fetchall()
+            creditos = cursor.fetchall()
 
         connection.close()
 
-        # Validación: Si no hay pagos registrados
-        if not pagos:
-            return jsonify({"message": "No se encontraron pagos."}), 404
+        # Validación: Si no hay créditos registrados
+        if not creditos:
+            return jsonify({"message": "No se encontraron créditos."}), 404
 
         # Detectar el formato solicitado por el cliente
         accept_header = request.headers.get('Accept', 'application/json')  # JSON por defecto
 
         if 'application/xml' in accept_header:  # Si el cliente solicita XML
-            xml_data = dicttoxml.dicttoxml(pagos, custom_root='pagos', attr_type=False)
+            xml_data = dicttoxml.dicttoxml(creditos, custom_root='creditos', attr_type=False)
             return Response(xml_data, content_type='application/xml; charset=utf-8')
         else:  # Por defecto, responder con JSON
-            return jsonify(pagos)
+            return jsonify(creditos)
 
     except pymysql.MySQLError as e:
         # Error relacionado con la base de datos
@@ -63,5 +62,6 @@ def internal_server_error(error):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=5016)
+    app.run(host='0.0.0.0',port=5018)
+
 

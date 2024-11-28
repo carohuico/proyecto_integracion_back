@@ -3,10 +3,10 @@ from app.db_config import get_db_connection
 from flask_cors import CORS
 import xmltodict
 import dicttoxml
+from token_required import token_required
 
 app = Flask(__name__)
-# Configuración explícita de CORS
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app)  # Configuración simplificada de CORS
 
 def xml_to_dict(xml_data):
     try:
@@ -17,17 +17,9 @@ def xml_to_dict(xml_data):
 def dict_to_xml(data):
     return dicttoxml.dicttoxml(data, custom_root='response', attr_type=False)
 
-@app.route('/api/creditos/<int:id_credito>/actualizar', methods=['OPTIONS', 'PUT'])
-def actualizar_credito(id_credito):
-    # Manejo de preflight para CORS
-    if request.method == 'OPTIONS':
-        response = Response(status=204)  # Cambiado a 204 sin contenido
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Methods"] = "PUT, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-        return response
-
-    # Detectar el tipo de contenido
+@app.route('/api/creditos/<int:id_credito>/actualizar', methods=['PUT'])
+@token_required
+def actualizar_credito(id_credito, user_data):
     content_type = request.headers.get('Content-Type')
     try:
         if content_type == 'application/json':
@@ -40,14 +32,11 @@ def actualizar_credito(id_credito):
         valor_pactado = float(data['valor_pactado'])
         valor_pagado = float(data['valor_pagado'])
 
-
-        # Validar datos requeridos
         if not all(k in data for k in ('valor_pactado', 'valor_pagado')):
             return Response("Faltan datos requeridos", status=400)
         
         print(f"Actualizando crédito con ID {id_credito}: valor_pactado = {valor_pactado}, valor_pagado = {valor_pagado}")
 
-        # Conexión y actualización
         connection = get_db_connection()
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -57,10 +46,9 @@ def actualizar_credito(id_credito):
             """, (valor_pactado, valor_pagado, id_credito))
             connection.commit()
         
-        # Responder en el formato solicitado
         response_data = {"message": "Crédito actualizado con éxito"}
         if content_type == 'application/xml':
-            response_xml = dict_to_xml(response_data)
+            response_xml = dicttoxml.dicttoxml(response_data, custom_root='response', attr_type=False)
             return Response(response_xml, content_type='application/xml')
         else:
             return jsonify(response_data)
@@ -73,7 +61,5 @@ def actualizar_credito(id_credito):
         if 'connection' in locals():
             connection.close()
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5005)
-

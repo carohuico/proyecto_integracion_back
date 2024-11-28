@@ -28,7 +28,7 @@ def login():
             query = "SELECT * FROM usuarios WHERE username = %s AND estado = 1"
             cursor.execute(query, (username,))
             user = cursor.fetchone()
-
+            
             if not user:
                 return jsonify({"message": "Usuario no encontrado o inactivo"}), 404
 
@@ -38,7 +38,7 @@ def login():
 
             # Generar token JWT
             #tiempo mexico
-            exp =  datetime.utcnow() + timedelta(minutes=1)
+            exp = datetime.now(timezone.utc) + timedelta(hours=1)
             token = jwt.encode(
                 {
                     "id_usuario": user["id_usuario"],
@@ -49,14 +49,20 @@ def login():
                 SECRET_KEY,
                 algorithm=ALGORITHM,
             )
-            logging.info(f"El token expira en {datetime.utcnow() + timedelta(seconds=20)}")
+            print(f"El token expira en {exp}")
+            
+            #obtener id_cliente del usuario
+            query_id = "SELECT id_cliente FROM usuarios WHERE id_usuario = %s"
+            cursor.execute(query_id, (user["id_usuario"],))
+            id_cliente = cursor.fetchone()
+            print(f"El id_cliente es {id_cliente}")
 
             # Registrar el último acceso en la base de datos
             update_query = "UPDATE usuarios SET ultimo_acceso = NOW() WHERE id_usuario = %s"
             cursor.execute(update_query, (user["id_usuario"],))
             connection.commit()
 
-            return jsonify({"token": token, "role": user["role"]})
+            return jsonify({"token": token, "role": user["role"], "id_cliente": id_cliente["id_cliente"]}), 200
 
     except Exception as e:
         return jsonify({"message": f"Error interno: {str(e)}"}), 500

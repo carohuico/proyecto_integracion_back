@@ -20,6 +20,20 @@ def get_clientes():
     connection.close()
     return jsonify(clientes)
 
+@app.route('/get_cliente/<int:id_cliente>', methods=['GET'])
+@token_required
+def get_cliente(id_cliente, user_data):
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT *
+            FROM clientes
+            WHERE id_cliente = %s
+        """, (id_cliente,))
+        cliente = cursor.fetchone()
+    connection.close()
+    return jsonify(cliente)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002)
 

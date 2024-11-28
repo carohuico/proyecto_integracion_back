@@ -2,13 +2,15 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from app.db_config import get_db_connection
+from token_required import token_required
  
 app = Flask(__name__)
 CORS(app)
 
 # DELETE /api/historial-credito/{id}: Eliminar una entrada de crédito y sus pagos asociados.
 @app.route('/api/historial-credito/<id>', methods=['DELETE'])
-def delete_credit(id):
+@token_required
+def delete_credit(id, user_data):
     connection = get_db_connection()
     with connection.cursor() as cursor:
         # Eliminar los pagos asociados al crédito

@@ -29,7 +29,16 @@ services = [
     {"folder": "CRUD_historial_credito", "file": "service_c_historial", "port": 5012},
     {"folder": "CRUD_historial_credito", "file": "service_r_historial", "port": 5013},
     {"folder": "CRUD_historial_credito", "file": "service_u_historial", "port": 5014},
-    {"folder": "CRUD_historial_credito", "file": "service_d_historial", "port": 5015}
+    {"folder": "CRUD_historial_credito", "file": "service_d_historial", "port": 5015},
+    {"folder": "landpage", "file": "graficos", "port": 5011},
+    {"folder": "CRUD_reportes", "file": "creditos_activos", "port": 5018},
+    {"folder": "CRUD_reportes", "file": "pagos_atrasados", "port": 5019},
+    {"folder": "CRUD_reportes", "file": "reporte_cliente", "port": 5020},
+    {"folder": "CRUD_reportes", "file": "resumen_financiero", "port": 5021},
+    {"folder": "CRUD_reportes", "file": "creditos_totales", "port": 5022},
+    {"folder": "analisis", "file": "analitica_xml", "port": 5026},
+    {"folder": "analisis", "file": "graficas_json", "port": 5023},
+    {"folder": "analisis", "file": "graficas2", "port": 5025},
 ]
 
 threads = []

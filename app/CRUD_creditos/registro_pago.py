@@ -2,12 +2,14 @@ from flask import Flask, request, jsonify, Response
 from app.db_config import get_db_connection
 from flask_cors import CORS
 import xml.etree.ElementTree as ET
+from token_required import token_required
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/api/pagos', methods=['POST'])
-def registrar_pago():
+@token_required
+def registrar_pago(user_data):
     # Intentar procesar JSON primero
     data = None
     if request.is_json:

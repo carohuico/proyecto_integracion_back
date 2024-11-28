@@ -59,4 +59,4 @@ def get_historial_cliente(clienteId):
     return jsonify(historial)
 
 if __name__ == '__main__':
-    app.run(port=5013)
+    app.run(host='0.0.0.0', port=5013)

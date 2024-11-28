@@ -1,12 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from app.db_config import get_db_connection
+from token_required import token_required
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/api/historial-credito', methods=['POST'])
-def create_credit_and_payment():
+@token_required
+def create_credit_and_payment(user_data):
     data = request.get_json()
     print(data)
 

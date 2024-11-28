@@ -3,12 +3,14 @@ from app.db_config import get_db_connection
 import pymysql
 from flask_cors import CORS
 import dicttoxml  # Para convertir a XML
+from token_required import token_required
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/api/pagos/<int:id_cliente>', methods=['GET'])
-def historial_pagos(id_cliente):
+@token_required
+def historial_pagos(id_cliente, user_data):
     try:
         # Conexión a la base de datos
         connection = get_db_connection()
