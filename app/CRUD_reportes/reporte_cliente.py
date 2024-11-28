@@ -6,9 +6,9 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)  
 
-@app.route('/api/creditos/<int:cliente_id>', methods=['GET'])
-def obtener_creditos_cliente():
-    cliente_id = request.args.get('id_cliente')
+@app.route('/api/reporte-cliente/<int:cliente_id>', methods=['GET'])
+@token_requiered
+def obtener_creditos_cliente(cliente_id, user_data):
     if not cliente_id:
         return jsonify({"message": "ID de cliente es necesario"}), 400
 
@@ -17,10 +17,10 @@ def obtener_creditos_cliente():
         with connection.cursor() as cursor:
             query = """
                 SELECT * FROM creditos
-                WHERE id_cliente = %s AND estado_credito = 'activo'
+                WHERE id_cliente = %s
             """
             cursor.execute(query, (cliente_id,))
-            creditos = cursor.fetchall()
+            result = cursor.fetchall()
 
         # Si no hay créditos activos
         if not creditos:
@@ -34,7 +34,5 @@ def obtener_creditos_cliente():
     finally:
         connection.close()
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5020)
-

@@ -17,8 +17,10 @@ def obtener_creditos_cliente(cliente_id, user_data):  # Recibe cliente_id como a
     try:
         with connection.cursor() as cursor:
             query = """
-                SELECT * FROM creditos
-                WHERE id_cliente = %s AND estado_credito = 'activo'
+                SELECT c.id_credito, c.id_viaje, c.id_cliente, cl.nombre_1 AS nombre, c.estado_credito, c.valor_pactado, c.valor_pagado
+FROM creditos c
+JOIN clientes cl ON c.id_cliente = cl.id_cliente
+WHERE c.id_cliente = %s AND c.estado_credito = 'activo';
             """
             cursor.execute(query, (cliente_id,))
             creditos = cursor.fetchall()

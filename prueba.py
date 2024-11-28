@@ -18,7 +18,7 @@ coordenadas_cache = {}
 def normalizar_lugar(lugar):
     partes = lugar.split()  # Divide el texto en palabras
     if len(partes) > 1:
-        ciudad = ' '.join(partes[:-1]).capitalize()  # Todo menos la última palabra
+        ciudad = ' '.join(partes[:-1]).capitalize() # Todas las palabras menos la última
         departamento = partes[-1].capitalize()  # Última palabra
         return f"{ciudad}, {departamento}"
     return lugar.capitalize()
