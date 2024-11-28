@@ -75,5 +75,44 @@ def get_cierre_vial_analitica():
     return Response(xml_data, mimetype='application/xml')
 
 
+@app.route('/api/perdidas-producto-financiero', methods=['GET'])
+def get_perdidas_producto_financiero():
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT 
+                v.cod_producto,
+                p.producto,
+                SUM(cr.valor_pagado - cr.valor_pactado) AS perdidas_totales
+            FROM 
+                creditos cr
+            JOIN 
+                viajes v ON cr.id_viaje = v.id_viaje
+            JOIN 
+                productos p ON v.cod_producto = p.cod_producto
+            WHERE 
+                cr.valor_pagado > cr.valor_pactado
+            GROUP BY 
+                v.cod_producto, p.producto
+            ORDER BY 
+                perdidas_totales DESC;
+        """)
+        data = cursor.fetchall()
+
+    connection.close()
+
+    # Crear la estructura XML
+    root = ET.Element("perdidas_por_producto_financiero")
+    for row in data:
+        producto = ET.SubElement(root, "producto")
+        ET.SubElement(producto, "cod_producto").text = str(row['cod_producto'])
+        ET.SubElement(producto, "producto").text = row['producto']
+        ET.SubElement(producto, "perdidas_totales").text = f"{row['perdidas_totales']:.2f}"
+
+    # Convertir el árbol XML en una cadena
+    xml_data = ET.tostring(root, encoding='utf-8', method='xml')
+
+    return Response(xml_data, mimetype='application/xml')
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5026)
