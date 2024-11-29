@@ -1,14 +1,16 @@
-# app/CRUD_clientes/service_c_cliente.py
 from flask import Flask, request, jsonify
 import random
 from app.db_config import get_db_connection
 from flask_cors import CORS
+from token_required import token_required
 
 app = Flask(__name__)
+CORS(app)
 CORS(app)
 
 @app.route('/create_cliente', methods=['POST'])
 def create_cliente():
+    print("create_cliente")
     print("create_cliente")
     data = request.json
     print("--------------------")
@@ -27,4 +29,4 @@ def create_cliente():
     return jsonify({"message": "Cliente creado con éxito"}), 201
 
 if __name__ == '__main__':
-    app.run(port=5001)
+    app.run(host='0.0.0.0', port=5001)
