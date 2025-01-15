@@ -6,12 +6,18 @@ def run_service(folder, file, port):
     """
     Ejecuta servicios usando threads en el puerto especificado
     """
+    # Construir la ruta absoluta al servicio
     filepath = os.path.join("app", folder, f"{file}.py")
-    os.system(f"python3 {filepath}")
+    
+    # Establecer el PYTHONPATH con 'set' para Windows
+    pythonpath = os.path.abspath(os.path.dirname(__file__))
+    command = f'set PYTHONPATH={pythonpath} && python {filepath}'
+    
+    # Usar os.system para ejecutar el comando
+    os.system(command)
 
 # Lista de servicios CRUD con el archivo y puerto correspondiente
 services = [
-    # Servicios de CRUD_clientes
     {"folder": "CRUD_clientes", "file": "register", "port": 5100},
     {"folder": "CRUD_clientes", "file": "login", "port": 5000},
     {"folder": "CRUD_clientes", "file": "service_c_cliente", "port": 5001},
@@ -54,4 +60,3 @@ for service in services:
 for thread in threads:
     thread.join()
     print("Todos los servicios han terminado.")
-
